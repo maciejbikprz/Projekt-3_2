@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NOAA - Stacje Klimatyczne</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>NOAA Stacje Klimatyczne</h1>
+        </header>
+
+        <div class="controls">
+            <button id="loadStationsBtn" class="btn btn-primary">Zaladuj Stacje</button>
+            <input type="text" id="searchInput" class="search-input" placeholder="Szukaj stacji...">
+            <div class="status" id="status"></div>
+        </div>
+
+        <div class="table-wrapper">
+            <table id="stationsTable" class="stations-table">
+                <thead>
+                    <tr>
+                        <th>ID Stacji</th>
+                        <th>Nazwa</th>
+                        <th>Szerokość (Latitude)</th>
+                        <th>Długość (Longitude)</th>
+                    </tr>
+                </thead>
+                <tbody id="stationsBody">
+                    <tr class="empty-state">
+                        <td colspan="4">Kliknij przycisk "Załaduj Stacje" aby pobrać dane</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <footer>
+            <p>Dane z NOAA CDO Web Services API</p>
+        </footer>
+    </div>
+
+    <script src="config.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
