@@ -27,6 +27,8 @@ const server = http.createServer((req, res) => {
 
     if (req.method === 'GET' && pathname === '/api/stations') {
         fetchStations(res);
+    } else if (req.method === 'GET' && pathname === '/api/locations') {
+        fetchLocations(res);
     } else {
         res.writeHead(404);
         res.end(JSON.stringify({ error: 'Not found' }));
@@ -56,7 +58,36 @@ function fetchStations(res) {
             res.end(data);
         });
     }).on('error', (error) => {
-        console.error('Błąd:', error);
+        console.error('Blad:', error);
+        res.writeHead(500);
+        res.end(JSON.stringify({ error: error.message }));
+    });
+}
+
+function fetchLocations(res) {
+    const https = require('https');
+    
+    const options = {
+        hostname: 'www.ncei.noaa.gov',
+        path: '/cdo-web/api/v2/locations',
+        headers: {
+            'token': API_TOKEN
+        }
+    };
+
+    https.get(options, (apiRes) => {
+        let data = '';
+
+        apiRes.on('data', (chunk) => {
+            data += chunk;
+        });
+
+        apiRes.on('end', () => {
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.end(data);
+        });
+    }).on('error', (error) => {
+        console.error('Blad:', error);
         res.writeHead(500);
         res.end(JSON.stringify({ error: error.message }));
     });

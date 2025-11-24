@@ -13,24 +13,23 @@
         </header>
 
         <div class="controls">
-            <button id="loadStationsBtn" class="btn btn-primary">Zaladuj Stacje</button>
-            <input type="text" id="searchInput" class="search-input" placeholder="Szukaj stacji...">
+            <button id="loadStationsBtn" class="btn">Zaladuj Stacje</button>
+            <button id="loadLocationsBtn" class="btn">Zaladuj Lokalizacje</button>
+            <input type="text" id="searchInput" class="search-input" placeholder="Szukaj...">
             <div class="status" id="status"></div>
         </div>
 
         <div class="table-wrapper">
-            <table id="stationsTable" class="stations-table">
+            <table id="dataTable">
                 <thead>
-                    <tr>
-                        <th>ID Stacji</th>
+                    <tr id="tableHeader">
+                        <th>ID</th>
                         <th>Nazwa</th>
-                        <th>Szerokość (Latitude)</th>
-                        <th>Długość (Longitude)</th>
                     </tr>
                 </thead>
-                <tbody id="stationsBody">
-                    <tr class="empty-state">
-                        <td colspan="4">Kliknij przycisk "Załaduj Stacje" aby pobrać dane</td>
+                <tbody id="tableBody">
+                    <tr>
+                        <td colspan="2">Wybierz dane do zaladowania</td>
                     </tr>
                 </tbody>
             </table>

@@ -1,75 +1,98 @@
 // Globalne zmienne
-let allStations = [];
+let allData = [];
+let currentDataType = 'stations';
 
 // Elementy DOM
 const loadStationsBtn = document.getElementById('loadStationsBtn');
+const loadLocationsBtn = document.getElementById('loadLocationsBtn');
 const searchInput = document.getElementById('searchInput');
-const stationsBody = document.getElementById('stationsBody');
+const tableBody = document.getElementById('tableBody');
+const tableHeader = document.getElementById('tableHeader');
 const statusDiv = document.getElementById('status');
 
 // Event listeners
-loadStationsBtn.addEventListener('click', loadStations);
-searchInput.addEventListener('input', filterStations);
+loadStationsBtn.addEventListener('click', () => loadData('stations'));
+loadLocationsBtn.addEventListener('click', () => loadData('locations'));
+searchInput.addEventListener('input', filterData);
 
-async function loadStations() {
-    loadStationsBtn.disabled = true;
+async function loadData(type) {
+    const btn = type === 'stations' ? loadStationsBtn : loadLocationsBtn;
+    btn.disabled = true;
     statusDiv.textContent = 'Ładowanie...';
+    currentDataType = type;
 
     try {
-        console.log('Wysyłam zapytanie...');
-        
-        const url = `${CONFIG.API_BASE_URL}${CONFIG.ENDPOINTS.STATIONS}`;
+        const endpoint = type === 'stations' ? CONFIG.ENDPOINTS.STATIONS : CONFIG.ENDPOINTS.LOCATIONS;
+        const url = `${CONFIG.API_BASE_URL}${endpoint}`;
         
         console.log('URL:', url);
         
-        const response = await fetch(url, {
-            method: 'GET'
-        });
+        const response = await fetch(url, { method: 'GET' });
 
         console.log('Status odpowiedzi:', response.status);
         
         if (!response.ok) {
-            throw new Error(`Błąd: ${response.status}`);
+            throw new Error(`Blad: ${response.status}`);
         }
 
         const data = await response.json();
         console.log('Pobrane dane:', data);
         
-        allStations = data.results;
-        displayStations(allStations);
-        statusDiv.textContent = `Załadowano ${allStations.length} stacji`;
+        allData = data.results;
+        displayData(allData, type);
+        statusDiv.textContent = `Zaladowano ${allData.length} rekordow`;
     } catch (error) {
-        console.error('Błąd:', error);
-        statusDiv.textContent = `Błąd: ${error.message}`;
+        console.error('Blad:', error);
+        statusDiv.textContent = `Blad: ${error.message}`;
     }
     
-    loadStationsBtn.disabled = false;
+    btn.disabled = false;
 }
 
-function displayStations(stations) {
-    stationsBody.innerHTML = stations.map(station => `
-        <tr>
-            <td>${station.id}</td>
-            <td>${station.name}</td>
-            <td>${station.latitude.toFixed(4)}</td>
-            <td>${station.longitude.toFixed(4)}</td>
-        </tr>
-    `).join('');
+function displayData(data, type) {
+    // Ustaw naglowek tabeli
+    if (type === 'stations') {
+        tableHeader.innerHTML = `
+            <th>ID</th>
+            <th>Nazwa</th>
+            <th>Latitude</th>
+            <th>Longitude</th>
+        `;
+        tableBody.innerHTML = data.map(item => `
+            <tr>
+                <td>${item.id}</td>
+                <td>${item.name}</td>
+                <td>${item.latitude.toFixed(4)}</td>
+                <td>${item.longitude.toFixed(4)}</td>
+            </tr>
+        `).join('');
+    } else if (type === 'locations') {
+        tableHeader.innerHTML = `
+            <th>ID</th>
+            <th>Nazwa</th>
+        `;
+        tableBody.innerHTML = data.map(item => `
+            <tr>
+                <td>${item.id}</td>
+                <td>${item.name}</td>
+            </tr>
+        `).join('');
+    }
 }
 
-function filterStations() {
+function filterData() {
     const searchTerm = searchInput.value.toLowerCase();
 
     if (searchTerm === '') {
-        displayStations(allStations);
+        displayData(allData, currentDataType);
         return;
     }
 
-    const filtered = allStations.filter(station => 
-        station.id.toLowerCase().includes(searchTerm) || 
-        station.name.toLowerCase().includes(searchTerm)
+    const filtered = allData.filter(item => 
+        item.id.toLowerCase().includes(searchTerm) || 
+        item.name.toLowerCase().includes(searchTerm)
     );
 
-    displayStations(filtered);
-    statusDiv.textContent = `Znaleziono ${filtered.length} stacji`;
+    displayData(filtered, currentDataType);
+    statusDiv.textContent = `Znaleziono ${filtered.length} rekordow`;
 }
