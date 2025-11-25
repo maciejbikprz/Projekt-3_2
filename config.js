@@ -2,6 +2,7 @@ const CONFIG = {
     API_BASE_URL: 'http://localhost:3000/api',
     ENDPOINTS: {
         STATIONS: '/stations',
-        LOCATIONS: '/locations'
+        LOCATIONS: '/locations',
+        DATA: '/data'
     }
 };
